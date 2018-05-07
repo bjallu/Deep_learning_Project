@@ -1,2 +1,2 @@
-/models/*
-/tiny-imagenet-200/*
+models/*
+tiny-imagenet-200/*
