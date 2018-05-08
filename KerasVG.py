@@ -95,7 +95,7 @@ def predict(image_path, verbose = 1):
     pred = model.predict(img_array)
 
     # Decode the output of the VGG16 model.
-    pred_decoded = decode_predictions(pred)[0]
+    pred_decoded = decode_predictions(pred, top=1000)
 
     # Print the predictions.
     if(verbose != 0):
@@ -275,13 +275,18 @@ def imageClass(image_path):
 # predict() uses only the pretrained model to
 # predict categories based on Imagenet's 1000 category labels
 
-
 for classifyImage in image_paths_train:
     [id, folder] = imageClass(classifyImage)
     imageNetPrediction = predict(image_path=classifyImage, verbose = 0)
-    print(id)
-    if(folder == imageNetPrediction[0][0]):
-        print("Prediction in top 1")
+    among200 = 0
+    for predictions5 in imageNetPrediction:
+        for p in predictions5:
+            predictFolder = p[0]
+            if(predictFolder in label_dict):
+                if(folder == predictFolder):
+                    print("Prediction in top: " + str(among200+1))
+                    break
+                among200 += 1
 
 
 transfer_layer = model.get_layer('block5_pool')

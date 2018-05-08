@@ -41,13 +41,6 @@ def load_filenames_labels(mode):
         filename = '../tiny-imagenet-200/val/images/' + split_line[0]
         label = str(label_dict[split_line[1]])
         filenames_labels.append((filename, label))
-  elif mode == 'test':
-    with open('../tiny-imagenet-200/test/test_annotations.txt', 'r') as f:
-      for line in f.readlines():
-        split_line = line.split('\t')
-        filename = '../tiny-imagenet-200/test/images/' + split_line[0]
-        label = str(label_dict[split_line[1]])
-        filenames_labels.append((filename, label))
 
   return filenames_labels
 
