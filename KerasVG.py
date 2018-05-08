@@ -6,12 +6,12 @@ import os
 from tensorflow.python.keras.models import Model, Sequential
 from tensorflow.python.keras.layers import Dense, Flatten, Dropout
 from tensorflow.python.keras.applications import VGG16
+from tensorflow.python.keras.applications import InceptionV3
 from tensorflow.python.keras.applications.vgg16 import preprocess_input, decode_predictions
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.optimizers import Adam, RMSprop
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import confusion_matrix
-
 
 model = VGG16(include_top=True, weights='imagenet')
 
@@ -77,6 +77,7 @@ def plot_images(images, cls_true, cls_pred=None, smooth=True):
 def predict(image_path):
     # Load and resize the image using PIL.
     img = PIL.Image.open(image_path)
+
     img_resized = img.resize(input_shape, PIL.Image.LANCZOS)
 
     # Plot the image.
@@ -126,6 +127,31 @@ def example_errors():
     # Print the confusion matrix.
     print_confusion_matrix(cls_pred)
 
+
+def plot_training_history(history):
+    # Get the classification accuracy and loss-value
+    # for the training-set.
+    acc = history.history['categorical_accuracy']
+    loss = history.history['loss']
+
+    # Get it for the validation-set (we only use the test-set).
+    val_acc = history.history['val_categorical_accuracy']
+    val_loss = history.history['val_loss']
+
+    # Plot the accuracy and loss-values for the training-set.
+    plt.plot(acc, linestyle='-', color='b', label='Training Acc.')
+    plt.plot(loss, 'o', color='b', label='Training Loss')
+
+    # Plot it for the test-set.
+    plt.plot(val_acc, linestyle='--', color='r', label='Test Acc.')
+    plt.plot(val_loss, 'o', color='r', label='Test Loss')
+
+    # Plot title and legend.
+    plt.title('Training and Test Accuracy')
+    plt.legend()
+
+    # Ensure the plot shows correctly.
+    plt.show()
 
 def print_confusion_matrix(cls_pred):
     # cls_pred is an array of the predicted class-number for
@@ -183,7 +209,6 @@ datagen_train = ImageDataGenerator(
       fill_mode='nearest')
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-
 batch_size = 20
 
 if True:
@@ -294,11 +319,11 @@ history = new_model.fit_generator(generator=generator_train,
                                   validation_steps=steps_test)
 
 
-plot_training_history(history)
+# plot_training_history(history)
 
 result = new_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(result[1]))
-example_errors()
+# example_errors()
 
 conv_model.trainable = True
 
@@ -317,3 +342,10 @@ history = new_model.fit_generator(generator=generator_train,
                                   class_weight=class_weight,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
+
+
+
+plot_training_history(history)
+result = new_model.evaluate_generator(generator_test, steps=steps_test)
+print("Test-set classification accuracy: {0:.2%}".format(result[1]))
+example_errors()
