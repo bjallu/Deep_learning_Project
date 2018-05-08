@@ -220,11 +220,11 @@ if True:
 else:
     save_to_dir='augmented_images/'
 
-train_dir = '../tiny-imagenet-200/train'
-test_dir = '../tiny-imagenet-200/val'
+#train_dir = '../tiny-imagenet-200/train'
+#test_dir = '../tiny-imagenet-200/val'
 
-# train_dir = './knifey-spoony/train'
-# test_dir = './knifey-spoony/test'
+train_dir = './knifey-spoony/train'
+test_dir = './knifey-spoony/test'
 
 generator_train = datagen_train.flow_from_directory(
     directory=train_dir,
@@ -271,6 +271,7 @@ def imageClass(image_path):
 
 
 ############### Start ###############
+'''
 [label_dict, category_description] = build_label_dicts()
 # predict() uses only the pretrained model to
 # predict categories based on Imagenet's 1000 category labels
@@ -288,7 +289,7 @@ for classifyImage in image_paths_train:
                     break
                 among200 += 1
 
-
+'''
 transfer_layer = model.get_layer('block5_pool')
 
 conv_model = Model(inputs=model.input,
@@ -336,7 +337,7 @@ new_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 new_model.summary()
 
-epochs = 5
+epochs = 20
 steps_per_epoch = 100
 
 history = new_model.fit_generator(generator=generator_train,
