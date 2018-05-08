@@ -275,14 +275,14 @@ def imageClass(image_path):
 # predict() uses only the pretrained model to
 # predict categories based on Imagenet's 1000 category labels
 
-'''
+
 for classifyImage in image_paths_train:
     [id, folder] = imageClass(classifyImage)
     imageNetPrediction = predict(image_path=classifyImage, verbose = 0)
     print(id)
     if(folder == imageNetPrediction[0][0]):
         print("Prediction in top 1")
-'''
+
 
 transfer_layer = model.get_layer('block5_pool')
 
@@ -332,7 +332,7 @@ new_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 new_model.summary()
 
 epochs = 5
-steps_per_epoch = 5
+steps_per_epoch = 100
 
 history = new_model.fit_generator(generator=generator_train,
                                   epochs=epochs,
