@@ -28,17 +28,24 @@ def load_filenames_labels(mode):
   label_dict, class_description = build_label_dicts()
   filenames_labels = []
   if mode == 'train':
-    filenames = glob.glob('./tiny-imagenet-200/train/*/images/*.JPEG')
+    filenames = glob.glob('../tiny-imagenet-200/train/*/images/*.JPEG')
     for filename in filenames:
       match = re.search(r'n\d+', filename)
       label = str(label_dict[match.group()])
       filenames_labels.append((filename, label))
 
   elif mode == 'val':
-    with open('./tiny-imagenet-200/val/val_annotations.txt', 'r') as f:
+    with open('../tiny-imagenet-200/val/val_annotations.txt', 'r') as f:
       for line in f.readlines():
         split_line = line.split('\t')
-        filename = './tiny-imagenet-200/val/images/' + split_line[0]
+        filename = '../tiny-imagenet-200/val/images/' + split_line[0]
+        label = str(label_dict[split_line[1]])
+        filenames_labels.append((filename, label))
+  elif mode == 'test':
+    with open('../tiny-imagenet-200/test/test_annotations.txt', 'r') as f:
+      for line in f.readlines():
+        split_line = line.split('\t')
+        filename = '../tiny-imagenet-200/test/images/' + split_line[0]
         label = str(label_dict[split_line[1]])
         filenames_labels.append((filename, label))
 
@@ -59,11 +66,11 @@ def build_label_dicts():
         values = text description from words.txt
   """
   label_dict, class_description = {}, {}
-  with open('./tiny-imagenet-200/wnids.txt', 'r') as f:
+  with open('../tiny-imagenet-200/wnids.txt', 'r') as f:
     for i, line in enumerate(f.readlines()):
       synset = line[:-1]  # remove \n
       label_dict[synset] = i
-  with open('./tiny-imagenet-200/words.txt', 'r') as f:
+  with open('../tiny-imagenet-200/words.txt', 'r') as f:
     for i, line in enumerate(f.readlines()):
       synset, desc = line.split('\t')
       desc = desc[:-1]  # remove \n

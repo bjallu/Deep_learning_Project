@@ -13,6 +13,20 @@ def print_Categories():
         print(folder_name + '\t' + str(number) + '\t' + category_description[number])
 
 
+def create_dictionaries():
+    # label_dict (folder_name, number)
+    # class_description (number, category_name)
+    folder_to_id = {}
+    id_to_folder = {}
+    for i in label_dict:
+        folder_name = i
+        number = label_dict[folder_name]
+        id_to_folder[str(number)] = folder_name
+        folder_to_id[folder_name] = number
+
+    return [id_to_folder, folder_to_id]
+
+
 if __name__ == '__main__':
 
     # loads the folders, numbers and descriptions into dictionaries

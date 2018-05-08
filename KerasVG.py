@@ -12,6 +12,7 @@ from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.optimizers import Adam, RMSprop
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import confusion_matrix
+from input_pipe import *
 
 model = VGG16(include_top=True, weights='imagenet')
 
@@ -74,15 +75,16 @@ def plot_images(images, cls_true, cls_pred=None, smooth=True):
     # in a single Notebook cell.
     plt.show()
 
-def predict(image_path):
+def predict(image_path, verbose = 1):
     # Load and resize the image using PIL.
     img = PIL.Image.open(image_path)
 
     img_resized = img.resize(input_shape, PIL.Image.LANCZOS)
 
-    # Plot the image.
-    plt.imshow(img_resized)
-    plt.show()
+    if(verbose != 0):
+        # Plot the image.
+        plt.imshow(img_resized)
+        plt.show()
 
     # Convert the PIL image to a numpy-array with the proper shape.
     img_array = np.expand_dims(np.array(img_resized), axis=0)
@@ -96,8 +98,11 @@ def predict(image_path):
     pred_decoded = decode_predictions(pred)[0]
 
     # Print the predictions.
-    for code, name, score in pred_decoded:
-        print("{0:>6.2%} : {1}".format(score, name))
+    if(verbose != 0):
+        for code, name, score in pred_decoded:
+            print("{0:>6.2%} : {1}".format(score, name))
+
+    return pred_decoded
 
 def print_layer_trainable():
     for layer in conv_model.layers:
@@ -126,7 +131,6 @@ def example_errors():
 
     # Print the confusion matrix.
     print_confusion_matrix(cls_pred)
-
 
 def plot_training_history(history):
     # Get the classification accuracy and loss-value
@@ -216,9 +220,11 @@ if True:
 else:
     save_to_dir='augmented_images/'
 
-# train_dir = '../tiny-imagenet-200/train'
-train_dir = './knifey-spoony/train'
-test_dir = './knifey-spoony/test'
+train_dir = '../tiny-imagenet-200/train'
+test_dir = '../tiny-imagenet-200/val'
+
+# train_dir = './knifey-spoony/train'
+# test_dir = './knifey-spoony/test'
 
 generator_train = datagen_train.flow_from_directory(
     directory=train_dir,
@@ -226,7 +232,6 @@ generator_train = datagen_train.flow_from_directory(
     batch_size=batch_size,
     shuffle=True,
     save_to_dir=save_to_dir)
-
 
 generator_test = datagen_test.flow_from_directory(
     directory=test_dir,
@@ -252,19 +257,35 @@ images = load_images(image_paths=image_paths_train[0:9])
 cls_true = cls_train[0:9]
 
 # Plot the images and labels using our helper-function above.
-plot_images(images=images, cls_true=cls_true, smooth=True)
+# plot_images(images=images, cls_true=cls_true, smooth=True)
 
 class_weight = compute_class_weight(class_weight='balanced',
                                     classes=np.unique(cls_train),
                                     y=cls_train)
 
-predict(image_path='../tiny-imagenet-200/train/n01644900/images/n01644900_0.JPEG')
-predict(image_path=image_paths_train[0])
+
+def imageClass(image_path):
+    folder = image_path.rsplit('/', 1)[-1]
+    folder = folder.rsplit('_', 1)[0]
+    return [label_dict[folder], folder]
 
 
-model.summary()
+############### Start ###############
+[label_dict, category_description] = build_label_dicts()
+# predict() uses only the pretrained model to
+# predict categories based on Imagenet's 1000 category labels
+
+'''
+for classifyImage in image_paths_train:
+    [id, folder] = imageClass(classifyImage)
+    imageNetPrediction = predict(image_path=classifyImage, verbose = 0)
+    print(id)
+    if(folder == imageNetPrediction[0][0]):
+        print("Prediction in top 1")
+'''
 
 transfer_layer = model.get_layer('block5_pool')
+
 conv_model = Model(inputs=model.input,
                    outputs=transfer_layer.output)
 
@@ -291,25 +312,27 @@ new_model.add(Dropout(0.5))
 # Add the final layer for the actual classification.
 new_model.add(Dense(num_classes, activation='softmax'))
 
-
-optimizer = Adam(lr=1e-5)
+optimizer = Adam(lr=1e-7)
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy']
 
-# print_layer_trainable()
+print_layer_trainable()
+
 
 conv_model.trainable = False
 
-for layer in conv_model.layers:
+for layer in model.layers:
     layer.trainable = False
 
-# print_layer_trainable()
+print_layer_trainable()
 
 new_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
-epochs = 20
-steps_per_epoch = 100
+new_model.summary()
+
+epochs = 5
+steps_per_epoch = 5
 
 history = new_model.fit_generator(generator=generator_train,
                                   epochs=epochs,
@@ -318,12 +341,11 @@ history = new_model.fit_generator(generator=generator_train,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
-
-# plot_training_history(history)
+plot_training_history(history)
 
 result = new_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(result[1]))
-# example_errors()
+example_errors()
 
 conv_model.trainable = True
 
