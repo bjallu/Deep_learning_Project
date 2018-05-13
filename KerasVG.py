@@ -128,7 +128,7 @@ def example_errors():
     cls_pred = np.argmax(y_pred, axis=1)
 
     # Plot examples of mis-classified images.
-    plot_example_errors(cls_pred)
+    # plot_example_errors(cls_pred)
 
     # Print the confusion matrix.
     print_confusion_matrix(cls_pred)
@@ -355,7 +355,8 @@ history = new_model.fit_generator(generator=generator_train,
 
 result = new_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(result[1]))
-#example_errors()
+example_errors()
+
 
 conv_model.trainable = True
 
@@ -366,7 +367,12 @@ for layer in conv_model.layers:
     # Set the layer's bool.
     layer.trainable = trainable
 
+
+print_layer_trainable()
+
 optimizer_fine = Adam(lr=1e-7)
+
+new_model.compile(optimizer=optimizer_fine, loss=loss, metrics=metrics)
 
 history = new_model.fit_generator(generator=generator_train,
                                   epochs=epochs,
@@ -380,4 +386,4 @@ history = new_model.fit_generator(generator=generator_train,
 #plot_training_history(history)
 result = new_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(result[1]))
-#example_errors()
+example_errors()
