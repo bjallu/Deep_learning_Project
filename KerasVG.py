@@ -341,7 +341,7 @@ new_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 new_model.summary()
 
-epochs = 20
+epochs = 2
 steps_per_epoch = 100
 
 history = new_model.fit_generator(generator=generator_train,
