@@ -7,6 +7,7 @@ from tensorflow.python.keras.models import Model, Sequential
 from tensorflow.python.keras.layers import Dense, Flatten, Dropout
 from tensorflow.python.keras.applications import VGG16
 from tensorflow.python.keras.applications import InceptionV3
+from tensorflow.python.keras.applications import MobileNet
 from tensorflow.python.keras.applications.vgg16 import preprocess_input, decode_predictions
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.optimizers import Adam, RMSprop
@@ -15,7 +16,7 @@ from sklearn.metrics import confusion_matrix
 from input_pipe import *
 
 model = VGG16(include_top=True, weights='imagenet')
-
+model.summary()
 def path_join(dirname, filenames):
     return [os.path.join(dirname, filename) for filename in filenames]
 
@@ -220,8 +221,8 @@ if True:
 else:
     save_to_dir='augmented_images/'
 
-#train_dir = '../tiny-imagenet-200/train'
-#test_dir = '../tiny-imagenet-200/val'
+# train_dir = '../tiny-imagenet-200/train'
+# test_dir = '../tiny-imagenet-200/val'
 
 train_dir = './knifey-spoony/train'
 test_dir = './knifey-spoony/test'
@@ -290,7 +291,10 @@ for classifyImage in image_paths_train:
                 among200 += 1
 
 '''
-transfer_layer = model.get_layer('block5_pool')
+
+model.summary()
+transfer_layer = model.get_layer('fc1')
+#transfer_layer = model.get_layer('conv_preds')
 
 conv_model = Model(inputs=model.input,
                    outputs=transfer_layer.output)
@@ -304,7 +308,7 @@ new_model.add(conv_model)
 
 # Flatten the output of the VGG16 model because it is from a
 # convolutional layer.
-new_model.add(Flatten())
+#new_model.add(Flatten())
 
 # Add a dense (aka. fully-connected) layer.
 # This is for combining features that the VGG16 model has
@@ -313,7 +317,7 @@ new_model.add(Dense(1024, activation='relu'))
 
 # Add a dropout-layer which may prevent overfitting and
 # improve generalization ability to unseen data e.g. the test-set.
-new_model.add(Dropout(0.5))
+#new_model.add(Dropout(0.5))
 
 # Add the final layer for the actual classification.
 new_model.add(Dense(num_classes, activation='softmax'))
