@@ -221,11 +221,11 @@ if True:
 else:
     save_to_dir='augmented_images/'
 
-# train_dir = '../tiny-imagenet-200/train'
-# test_dir = '../tiny-imagenet-200/val'
+train_dir = '../tiny-imagenet-200/train'
+test_dir = '../tiny-imagenet-200/val'
 
-train_dir = './knifey-spoony/train'
-test_dir = './knifey-spoony/test'
+# train_dir = './knifey-spoony/train'
+# test_dir = './knifey-spoony/test'
 
 generator_train = datagen_train.flow_from_directory(
     directory=train_dir,
@@ -342,7 +342,7 @@ new_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 new_model.summary()
 
 epochs = 2
-steps_per_epoch = 100
+steps_per_epoch = 5000
 
 history = new_model.fit_generator(generator=generator_train,
                                   epochs=epochs,
