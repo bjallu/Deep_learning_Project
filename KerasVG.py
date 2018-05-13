@@ -16,7 +16,7 @@ from sklearn.metrics import confusion_matrix
 from input_pipe import *
 
 model = VGG16(include_top=True, weights='imagenet')
-model.summary()
+
 def path_join(dirname, filenames):
     return [os.path.join(dirname, filename) for filename in filenames]
 
@@ -293,7 +293,7 @@ for classifyImage in image_paths_train:
 '''
 
 model.summary()
-transfer_layer = model.get_layer('fc1')
+transfer_layer = model.get_layer('block5_pool')
 #transfer_layer = model.get_layer('conv_preds')
 
 conv_model = Model(inputs=model.input,
@@ -322,7 +322,7 @@ new_model.add(Dropout(0.5))
 # Add the final layer for the actual classification.
 new_model.add(Dense(num_classes, activation='softmax'))
 
-optimizer = Adam(lr=1e-7)
+optimizer = Adam(lr=1e-5)
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy']
@@ -351,11 +351,11 @@ history = new_model.fit_generator(generator=generator_train,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
-plot_training_history(history)
+#plot_training_history(history)
 
 result = new_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(result[1]))
-example_errors()
+#example_errors()
 
 conv_model.trainable = True
 
@@ -377,7 +377,7 @@ history = new_model.fit_generator(generator=generator_train,
 
 
 
-plot_training_history(history)
+#plot_training_history(history)
 result = new_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(result[1]))
-example_errors()
+#example_errors()
