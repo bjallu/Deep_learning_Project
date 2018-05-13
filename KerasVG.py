@@ -3,6 +3,7 @@ import PIL
 import tensorflow as tf
 import numpy as np
 import os
+import time
 from tensorflow.python.keras.models import Model, Sequential
 from tensorflow.python.keras.layers import Dense, Flatten, Dropout
 from tensorflow.python.keras.applications import VGG16
@@ -166,6 +167,15 @@ def print_confusion_matrix(cls_pred):
     cm = confusion_matrix(y_true=cls_test,  # True class for test-set.
                           y_pred=cls_pred)  # Predicted class.
 
+    # write the confusion matrix to file
+    currentTime = int(time.time())
+    filename = str(currentTime) + 'ConfusionMatrix.txt'
+    thefile = open(filename, 'w+')
+    for item in cm:
+        for number in item:
+            thefile.write("%s\t" % number)
+        thefile.write("\n")
+
     print("Confusion matrix:")
 
     # Print the confusion matrix as text.
@@ -173,7 +183,10 @@ def print_confusion_matrix(cls_pred):
 
     # Print the class-names for easy reference.
     for i, class_name in enumerate(class_names):
+        thefile.write("%s\n" % class_name)
         print("({0}) {1}".format(i, class_name))
+
+    thefile.close()
 
 def plot_example_errors(cls_pred):
     # cls_pred is an array of the predicted class-number for
@@ -209,8 +222,8 @@ datagen_train = ImageDataGenerator(
       height_shift_range=0.1,
       shear_range=0.1,
       zoom_range=[0.9, 1.5],
-      horizontal_flip=True,
-      vertical_flip=True,
+      horizontal_flip=False,
+      vertical_flip=False,
       fill_mode='nearest')
 
 datagen_test = ImageDataGenerator(rescale=1./255)
@@ -221,11 +234,11 @@ if True:
 else:
     save_to_dir='augmented_images/'
 
-train_dir = '../tiny-imagenet-200/train'
-test_dir = '../tiny-imagenet-200/val'
+# train_dir = '../tiny-imagenet-200/train'
+# test_dir = '../tiny-imagenet-200/val'
 
-# train_dir = './knifey-spoony/train'
-# test_dir = './knifey-spoony/test'
+train_dir = './knifey-spoony/train'
+test_dir = './knifey-spoony/test'
 
 generator_train = datagen_train.flow_from_directory(
     directory=train_dir,
@@ -294,7 +307,7 @@ for classifyImage in image_paths_train:
 
 model.summary()
 transfer_layer = model.get_layer('block5_pool')
-#transfer_layer = model.get_layer('conv_preds')
+# transfer_layer = model.get_layer('conv_preds')
 
 conv_model = Model(inputs=model.input,
                    outputs=transfer_layer.output)
@@ -313,11 +326,11 @@ new_model.add(Flatten())
 # Add a dense (aka. fully-connected) layer.
 # This is for combining features that the VGG16 model has
 # recognized in the image.
-new_model.add(Dense(1024, activation='relu'))
+# new_model.add(Dense(1024, activation='relu'))
 
 # Add a dropout-layer which may prevent overfitting and
 # improve generalization ability to unseen data e.g. the test-set.
-new_model.add(Dropout(0.5))
+# new_model.add(Dropout(0.5))
 
 # Add the final layer for the actual classification.
 new_model.add(Dense(num_classes, activation='softmax'))
@@ -325,7 +338,7 @@ new_model.add(Dense(num_classes, activation='softmax'))
 optimizer = Adam(lr=1e-5)
 
 loss = 'categorical_crossentropy'
-metrics = ['categorical_accuracy']
+metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
 
 print_layer_trainable()
 
@@ -341,22 +354,20 @@ new_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 new_model.summary()
 
-epochs = 2
-steps_per_epoch = 5000
+epochs = 1
+steps_per_epoch = 1
 
 history = new_model.fit_generator(generator=generator_train,
                                   epochs=epochs,
                                   steps_per_epoch=steps_per_epoch,
-                                  class_weight=class_weight,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
-#plot_training_history(history)
+# plot_training_history(history)
 
 result = new_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(result[1]))
 example_errors()
-
 
 conv_model.trainable = True
 
@@ -377,7 +388,6 @@ new_model.compile(optimizer=optimizer_fine, loss=loss, metrics=metrics)
 history = new_model.fit_generator(generator=generator_train,
                                   epochs=epochs,
                                   steps_per_epoch=steps_per_epoch,
-                                  class_weight=class_weight,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
