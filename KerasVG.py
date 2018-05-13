@@ -308,7 +308,7 @@ new_model.add(conv_model)
 
 # Flatten the output of the VGG16 model because it is from a
 # convolutional layer.
-#new_model.add(Flatten())
+new_model.add(Flatten())
 
 # Add a dense (aka. fully-connected) layer.
 # This is for combining features that the VGG16 model has
@@ -317,7 +317,7 @@ new_model.add(Dense(1024, activation='relu'))
 
 # Add a dropout-layer which may prevent overfitting and
 # improve generalization ability to unseen data e.g. the test-set.
-#new_model.add(Dropout(0.5))
+new_model.add(Dropout(0.5))
 
 # Add the final layer for the actual classification.
 new_model.add(Dense(num_classes, activation='softmax'))
