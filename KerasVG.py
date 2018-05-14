@@ -292,7 +292,6 @@ cls_true = cls_train[0:9]
 # Plot the images and labels using our helper-function above.
 # plot_images(images=images, cls_true=cls_true, smooth=True)
 
-
 model.summary()
 transfer_layer = model.get_layer('block5_pool')
 
@@ -329,7 +328,7 @@ main_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 main_model.summary()
 
-epochs = 1
+epochs = 24
 
 main_history = main_model.fit_generator(generator=generator_train,
                                   epochs=epochs, steps_per_epoch=steps_per_epoch,
