@@ -311,7 +311,7 @@ for classifyImage in image_paths_train:
 '''
 
 model.summary()
-transfer_layer = model.get_layer('block5_pool')
+transfer_layer = model.get_layer('fc1')
 
 conv_model = Model(inputs=model.input,
                    outputs=transfer_layer.output)
@@ -325,7 +325,6 @@ main_model.add(conv_model)
 # Flatten the output of the VGG16 model because it is from a
 # convolutional layer.
 main_model.add(Flatten())
-main_model.add(Dense(1024, activation='relu'))
 main_model.add(Dropout(0.5))
 main_model.add(Dense(1024, activation='relu'))
 main_model.add(Dense(num_classes, activation='softmax'))
@@ -348,7 +347,7 @@ main_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 main_model.summary()
 
-epochs = 200
+epochs = 1
 
 main_history = main_model.fit_generator(generator=generator_train,
                                   epochs=epochs, steps_per_epoch=steps_per_epoch,
