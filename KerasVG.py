@@ -239,6 +239,7 @@ datagen_train = ImageDataGenerator(
 
 datagen_test = ImageDataGenerator(rescale=1./255)
 batch_size = 160
+batch_size = 10
 
 if True:
     save_to_dir = None
