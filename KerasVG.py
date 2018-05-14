@@ -18,6 +18,38 @@ from input_pipe import *
 from keras.models import load_model
 import pickle
 
+filename = open('1526309313History' + ".pickle","rb")
+history = pickle.load(filename)
+filename.close()
+
+def plot_training_history(history):
+    # Get the classification accuracy and loss-value
+    # for the training-set.
+    acc = history.history['categorical_accuracy']
+    loss = history.history['loss']
+
+    # Get it for the validation-set (we only use the test-set).
+    val_acc = history.history['val_categorical_accuracy']
+    val_loss = history.history['val_loss']
+
+    # Plot the accuracy and loss-values for the training-set.
+    plt.plot(acc, linestyle='-', color='b', label='Training Acc.')
+    plt.plot(loss, 'o', color='b', label='Training Loss')
+
+    # Plot it for the test-set.
+    plt.plot(val_acc, linestyle='--', color='r', label='Test Acc.')
+    plt.plot(val_loss, 'o', color='r', label='Test Loss')
+
+    # Plot title and legend.
+    plt.title('Training and Test Accuracy')
+    plt.legend()
+
+    # Ensure the plot shows correctly.
+    plt.show()
+
+
+plot_training_history(history)
+
 model = VGG16(include_top=True, weights='imagenet')
 
 def save_model(model_in):
@@ -145,7 +177,7 @@ def save_history(history):
     currentTime = int(time.time())
     filename = str(currentTime) + 'History'
     filename = open(filename + ".pickle", 'wb')
-    pickle.dump(history.history, filename)
+    pickle.dump(history, filename)
     filename.close()
 
 
@@ -217,18 +249,18 @@ datagen_train = ImageDataGenerator(
       fill_mode='nearest')
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-batch_size = 20
+batch_size = 1000
 
 if True:
     save_to_dir = None
 else:
     save_to_dir='augmented_images/'
 
-#train_dir = '../tiny-imagenet-200/train'
-#test_dir = '../tiny-imagenet-200/val'
+train_dir = '../tiny-imagenet-200/train'
+test_dir = '../tiny-imagenet-200/val'
 
-train_dir = './knifey-spoony/train'
-test_dir = './knifey-spoony/test'
+#train_dir = './knifey-spoony/train'
+#test_dir = './knifey-spoony/test'
 
 generator_train = datagen_train.flow_from_directory(
     directory=train_dir,
@@ -322,7 +354,7 @@ main_model.add(Dense(1024, activation='relu'))
 main_model.add(Dense(num_classes, activation='softmax'))
 
 optimizer = Adam(lr=1e-4)
-steps_per_epoch = 1
+steps_per_epoch = 100
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
@@ -339,14 +371,12 @@ main_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 main_model.summary()
 
-epochs = 2
+epochs = 1
 
 main_history = main_model.fit_generator(generator=generator_train,
                                   epochs=epochs, steps_per_epoch=steps_per_epoch,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
-
-save_history(main_history)
 
 main_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_result[1]))
@@ -368,9 +398,12 @@ main_fine_history = main_model.fit_generator(generator=generator_train,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
-
 main_fine_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_fine_result[1]))
+
+# Confusion Matrix
 example_errors(main_model)
-save_history(main_fine_history)
+
+# Saves history to file
 save_model(main_model)
+save_history(main_fine_history)
