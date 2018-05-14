@@ -173,8 +173,6 @@ def save_history(history):
     pickle.dump(history, filename)
     filename.close()
 
-
-
 def print_confusion_matrix(cls_pred):
     # cls_pred is an array of the predicted class-number for
     # all images in the test-set.
@@ -201,8 +199,6 @@ def print_confusion_matrix(cls_pred):
 
     filenameNumpy = str(currentTime) + 'ConfusionMatrix.npy'
     np.save(filenameNumpy, cm)
-
-
 
 def plot_example_errors(cls_pred):
     # cls_pred is an array of the predicted class-number for
@@ -242,7 +238,7 @@ datagen_train = ImageDataGenerator(
       fill_mode='nearest')
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-batch_size = 250
+batch_size = 450
 
 if True:
     save_to_dir = None
@@ -296,40 +292,9 @@ cls_true = cls_train[0:9]
 # Plot the images and labels using our helper-function above.
 # plot_images(images=images, cls_true=cls_true, smooth=True)
 
-class_weight = compute_class_weight(class_weight='balanced',
-                                    classes=np.unique(cls_train),
-                                    y=cls_train)
-
-
-def imageClass(image_path):
-    folder = image_path.rsplit('/', 1)[-1]
-    folder = folder.rsplit('_', 1)[0]
-    return [label_dict[folder], folder]
-
-
-############### Start ###############
-'''
-[label_dict, category_description] = build_label_dicts()
-# predict() uses only the pretrained model to
-# predict categories based on Imagenet's 1000 category labels
-
-for classifyImage in image_paths_train:
-    [id, folder] = imageClass(classifyImage)
-    imageNetPrediction = predict(image_path=classifyImage, verbose = 0)
-    among200 = 0
-    for predictions5 in imageNetPrediction:
-        for p in predictions5:
-            predictFolder = p[0]
-            if(predictFolder in label_dict):
-                if(folder == predictFolder):
-                    print("Prediction in top: " + str(among200+1))
-                    break
-                among200 += 1
-
-'''
 
 model.summary()
-transfer_layer = model.get_layer('fc1')
+transfer_layer = model.get_layer('block_5')
 
 conv_model = Model(inputs=model.input,
                    outputs=transfer_layer.output)
@@ -342,12 +307,12 @@ main_model.add(conv_model)
 
 # Flatten the output of the VGG16 model because it is from a
 # convolutional layer.
-main_model.add(Dropout(0.5))
 main_model.add(Dense(1024, activation='relu'))
+main_model.add(Dropout(0.5))
 main_model.add(Dense(num_classes, activation='softmax'))
 
 optimizer = Adam(lr=1e-4)
-steps_per_epoch = 400
+steps_per_epoch = 100000 / batch_size
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
@@ -360,7 +325,7 @@ for layer in model.layers:
 
 print_layer_trainable()
 
-main_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+main_model.compile(optimizer=optimizer, loss=loss)
 
 main_model.summary()
 
@@ -377,7 +342,7 @@ print("Test-set classification accuracy: {0:.2%}".format(main_result[1]))
 conv_model.trainable = True
 
 for layer in conv_model.layers:
-    trainable = ('block5' in layer.name or 'block4' in layer.name or 'fc1' in layer.name or 'flatten' in layer.name)
+    trainable = ('block5' in layer.name or 'block4' in layer.name)
     layer.trainable = trainable
 
 print_layer_trainable()

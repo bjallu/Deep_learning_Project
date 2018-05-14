@@ -27,6 +27,8 @@ def create_dictionaries():
     return [id_to_folder, folder_to_id]
 
 
+
+
 if __name__ == '__main__':
 
     # loads the folders, numbers and descriptions into dictionaries
@@ -80,3 +82,32 @@ if __name__ == '__main__':
         default=5,
         help='Display this many predictions.'
     )
+
+
+
+def imageClass(image_path):
+    folder = image_path.rsplit('/', 1)[-1]
+    folder = folder.rsplit('_', 1)[0]
+    return [label_dict[folder], folder]
+
+
+############### Start ###############
+'''
+[label_dict, category_description] = build_label_dicts()
+# predict() uses only the pretrained model to
+# predict categories based on Imagenet's 1000 category labels
+
+for classifyImage in image_paths_train:
+    [id, folder] = imageClass(classifyImage)
+    imageNetPrediction = predict(image_path=classifyImage, verbose = 0)
+    among200 = 0
+    for predictions5 in imageNetPrediction:
+        for p in predictions5:
+            predictFolder = p[0]
+            if(predictFolder in label_dict):
+                if(folder == predictFolder):
+                    print("Prediction in top: " + str(among200+1))
+                    break
+                among200 += 1
+
+'''
