@@ -144,7 +144,7 @@ def example_errors(model_in):
 def save_history(history):
     currentTime = int(time.time())
     filename = str(currentTime) + 'History'
-    filename = open(filename + ".pickle", 'w+')
+    filename = open(filename + ".pickle", 'wb')
     pickle.dump(history.history, filename)
     filename.close()
 
@@ -370,6 +370,5 @@ main_fine_history = main_model.fit_generator(generator=generator_train,
 main_fine_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_fine_result[1]))
 example_errors(main_model)
-save_history(main_history)
 save_history(main_fine_history)
 save_model(main_model)
