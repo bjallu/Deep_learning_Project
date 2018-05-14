@@ -294,7 +294,7 @@ cls_true = cls_train[0:9]
 
 
 model.summary()
-transfer_layer = model.get_layer('block_5')
+transfer_layer = model.get_layer('block5_pool')
 
 conv_model = Model(inputs=model.input,
                    outputs=transfer_layer.output)
@@ -304,7 +304,7 @@ main_model = Sequential()
 
 # Add the convolutional part of the VGG16 model from above.
 main_model.add(conv_model)
-
+main_model.add(Flatten())
 # Flatten the output of the VGG16 model because it is from a
 # convolutional layer.
 main_model.add(Dense(1024, activation='relu'))
