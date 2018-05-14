@@ -312,7 +312,6 @@ transfer_layer = model.get_layer('block5_pool')
 conv_model = Model(inputs=model.input,
                    outputs=transfer_layer.output)
 
-
 # Start a new Keras Sequential model.
 new_model = Sequential()
 
@@ -326,11 +325,11 @@ new_model.add(Flatten())
 # Add a dense (aka. fully-connected) layer.
 # This is for combining features that the VGG16 model has
 # recognized in the image.
-# new_model.add(Dense(1024, activation='relu'))
+new_model.add(Dense(1024, activation='relu'))
 
 # Add a dropout-layer which may prevent overfitting and
 # improve generalization ability to unseen data e.g. the test-set.
-# new_model.add(Dropout(0.5))
+new_model.add(Dropout(0.5))
 
 # Add the final layer for the actual classification.
 new_model.add(Dense(num_classes, activation='softmax'))
