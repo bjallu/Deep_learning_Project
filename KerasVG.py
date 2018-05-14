@@ -176,23 +176,23 @@ def print_confusion_matrix(cls_pred):
     # write the confusion matrix to file
     currentTime = int(time.time())
     filename = str(currentTime) + 'ConfusionMatrix.txt'
+
     thefile = open(filename, 'w+')
     for item in cm:
         for number in item:
             thefile.write("%s\t" % number)
         thefile.write("\n")
 
-    print("Confusion matrix:")
-
-    # Print the confusion matrix as text.
-    print(cm)
-
     # Print the class-names for easy reference.
     for i, class_name in enumerate(class_names):
         thefile.write("%s\n" % class_name)
-        print("({0}) {1}".format(i, class_name))
 
     thefile.close()
+
+    filenameNumpy = str(currentTime) + 'ConfusionMatrix.npy'
+    np.save(filenameNumpy, cm)
+
+
 
 def plot_example_errors(cls_pred):
     # cls_pred is an array of the predicted class-number for
@@ -324,13 +324,12 @@ main_model.add(conv_model)
 
 # Flatten the output of the VGG16 model because it is from a
 # convolutional layer.
-main_model.add(Flatten())
 main_model.add(Dropout(0.5))
 main_model.add(Dense(1024, activation='relu'))
 main_model.add(Dense(num_classes, activation='softmax'))
 
 optimizer = Adam(lr=1e-4)
-steps_per_epoch = 50
+steps_per_epoch = 1
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
@@ -358,12 +357,13 @@ main_history = main_model.fit_generator(generator=generator_train,
 
 main_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_result[1]))
+
 example_errors(main_model)
 
 conv_model.trainable = True
 
 for layer in conv_model.layers:
-    trainable = ('block5' in layer.name or 'block4' in layer.name or 'fc1' in layer.name)
+    trainable = ('block5' in layer.name or 'block4' in layer.name or 'fc1' in layer.name or 'flatten' in layer.name)
     layer.trainable = trainable
 
 print_layer_trainable()
