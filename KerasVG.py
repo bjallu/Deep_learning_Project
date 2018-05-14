@@ -43,9 +43,6 @@ def plot_training_history(history):
     # Ensure the plot shows correctly.
     plt.show()
 
-
-plot_training_history(history)
-
 model = VGG16(include_top=True, weights='imagenet')
 
 def save_model(model_in):
