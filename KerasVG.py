@@ -330,7 +330,7 @@ main_model.add(Dense(1024, activation='relu'))
 main_model.add(Dense(num_classes, activation='softmax'))
 
 optimizer = Adam(lr=1e-4)
-steps_per_epoch = 5000
+steps_per_epoch = 50
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
@@ -363,7 +363,7 @@ example_errors(main_model)
 conv_model.trainable = True
 
 for layer in conv_model.layers:
-    trainable = ('block5' in layer.name or 'block4' in layer.name)
+    trainable = ('block5' in layer.name or 'block4' in layer.name or 'fc1' in layer.name)
     layer.trainable = trainable
 
 print_layer_trainable()
