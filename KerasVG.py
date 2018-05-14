@@ -238,8 +238,7 @@ datagen_train = ImageDataGenerator(
       fill_mode='nearest')
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-batch_size = 160
-batch_size = 10
+batch_size = 320
 
 if True:
     save_to_dir = None
