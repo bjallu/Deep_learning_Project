@@ -308,7 +308,7 @@ main_model.add(Flatten())
 # Flatten the output of the VGG16 model because it is from a
 # convolutional layer.
 main_model.add(Dense(1024, activation='relu'))
-main_model.add(Dropout(0.5))
+#main_model.add(Dropout(0.5))
 main_model.add(Dense(num_classes, activation='softmax'))
 
 optimizer = Adam(lr=1e-4)
