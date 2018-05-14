@@ -126,7 +126,7 @@ def example_errors(model_in):
     # predicted classes with the input images.
     # If we reset the generator, then it always starts at the
     # beginning so we know exactly which input-images were used.
-    generator_train.reset()
+    generator_train_histogram.reset()
 
     # Predict the classes for all images in the test-set.
     y_pred = model_in.predict_generator(generator_train_histogram,
