@@ -125,11 +125,11 @@ def example_errors(model_in):
     # predicted classes with the input images.
     # If we reset the generator, then it always starts at the
     # beginning so we know exactly which input-images were used.
-    generator_test.reset()
+    generator_train.reset()
 
     # Predict the classes for all images in the test-set.
-    y_pred = model_in.predict_generator(generator_test,
-                                         steps=steps_test)
+    y_pred = model_in.predict_generator(generator_train,
+                                         steps=steps_per_epoch)
 
     # Convert the predicted classes from arrays to integers.
     cls_pred = np.argmax(y_pred, axis=1)
@@ -170,7 +170,7 @@ def print_confusion_matrix(cls_pred):
     # all images in the test-set.
 
     # Get the confusion matrix using sklearn.
-    cm = confusion_matrix(y_true=cls_test,  # True class for test-set.
+    cm = confusion_matrix(y_true=cls_train,  # True class for test-set.
                           y_pred=cls_pred)  # Predicted class.
 
     # write the confusion matrix to file
