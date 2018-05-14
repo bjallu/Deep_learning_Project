@@ -358,8 +358,6 @@ main_history = main_model.fit_generator(generator=generator_train,
 main_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_result[1]))
 
-example_errors(main_model)
-
 conv_model.trainable = True
 
 for layer in conv_model.layers:
