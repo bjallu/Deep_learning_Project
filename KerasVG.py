@@ -15,8 +15,15 @@ from tensorflow.python.keras.optimizers import Adam, RMSprop
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import confusion_matrix
 from input_pipe import *
+from keras.models import load_model
+
 
 model = VGG16(include_top=True, weights='imagenet')
+
+def save_model(model_in):
+    currentTime = int(time.time())
+    model_name = str(currentTime) + 'Model.h5'
+    model_in.save(model_name)
 
 def path_join(dirname, filenames):
     return [os.path.join(dirname, filename) for filename in filenames]
@@ -110,7 +117,7 @@ def print_layer_trainable():
     for layer in conv_model.layers:
         print("{0}:\t{1}".format(layer.trainable, layer.name))
 
-def example_errors():
+def example_errors(model_in):
     # The Keras data-generator for the test-set must be reset
     # before processing. This is because the generator will loop
     # infinitely and keep an internal index into the dataset.
@@ -122,7 +129,7 @@ def example_errors():
     generator_test.reset()
 
     # Predict the classes for all images in the test-set.
-    y_pred = new_model.predict_generator(generator_test,
+    y_pred = model_in.predict_generator(generator_test,
                                          steps=steps_test)
 
     # Convert the predicted classes from arrays to integers.
@@ -234,8 +241,8 @@ if True:
 else:
     save_to_dir='augmented_images/'
 
-# train_dir = '../tiny-imagenet-200/train'
-# test_dir = '../tiny-imagenet-200/val'
+#train_dir = '../tiny-imagenet-200/train'
+#test_dir = '../tiny-imagenet-200/val'
 
 train_dir = './knifey-spoony/train'
 test_dir = './knifey-spoony/test'
@@ -307,92 +314,74 @@ for classifyImage in image_paths_train:
 
 model.summary()
 transfer_layer = model.get_layer('block5_pool')
-# transfer_layer = model.get_layer('conv_preds')
 
 conv_model = Model(inputs=model.input,
                    outputs=transfer_layer.output)
 
 # Start a new Keras Sequential model.
-new_model = Sequential()
+main_model = Sequential()
 
 # Add the convolutional part of the VGG16 model from above.
-new_model.add(conv_model)
+main_model.add(conv_model)
 
 # Flatten the output of the VGG16 model because it is from a
 # convolutional layer.
-new_model.add(Flatten())
+main_model.add(Flatten())
+main_model.add(Dense(1024, activation='relu'))
+main_model.add(Dropout(0.5))
+main_model.add(Dense(1024, activation='relu'))
+main_model.add(Dense(num_classes, activation='softmax'))
 
-# Add a dense (aka. fully-connected) layer.
-# This is for combining features that the VGG16 model has
-# recognized in the image.
-new_model.add(Dense(1024, activation='relu'))
-
-# Add a dropout-layer which may prevent overfitting and
-# improve generalization ability to unseen data e.g. the test-set.
-new_model.add(Dropout(0.5))
-
-# Add the final layer for the actual classification.
-new_model.add(Dense(num_classes, activation='softmax'))
-
-optimizer = Adam(lr=1e-5)
+optimizer = Adam(lr=1e-4)
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
 
 print_layer_trainable()
 
-
 conv_model.trainable = False
-
 for layer in model.layers:
     layer.trainable = False
 
 print_layer_trainable()
 
-new_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+main_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
-new_model.summary()
+main_model.summary()
 
-epochs = 1
-steps_per_epoch = 1
+epochs = 200
 
-history = new_model.fit_generator(generator=generator_train,
+main_history = main_model.fit_generator(generator=generator_train,
                                   epochs=epochs,
-                                  steps_per_epoch=steps_per_epoch,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
-# plot_training_history(history)
+# plot_training_history(main_history)
 
-result = new_model.evaluate_generator(generator_test, steps=steps_test)
-print("Test-set classification accuracy: {0:.2%}".format(result[1]))
-example_errors()
+main_result = main_model.evaluate_generator(generator_test, steps=steps_test)
+print("Test-set classification accuracy: {0:.2%}".format(main_result[1]))
+example_errors(main_model)
 
 conv_model.trainable = True
 
 for layer in conv_model.layers:
-    # Boolean whether this layer is trainable.
     trainable = ('block5' in layer.name or 'block4' in layer.name)
-
-    # Set the layer's bool.
     layer.trainable = trainable
-
 
 print_layer_trainable()
 
 optimizer_fine = Adam(lr=1e-7)
 
-new_model.compile(optimizer=optimizer_fine, loss=loss, metrics=metrics)
+main_model.compile(optimizer=optimizer_fine, loss=loss, metrics=metrics)
 
-history = new_model.fit_generator(generator=generator_train,
+main_fine_history = main_model.fit_generator(generator=generator_train,
                                   epochs=epochs,
-                                  steps_per_epoch=steps_per_epoch,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
+save_model(main_model)
 
-
-#plot_training_history(history)
-result = new_model.evaluate_generator(generator_test, steps=steps_test)
-print("Test-set classification accuracy: {0:.2%}".format(result[1]))
-example_errors()
+#plot_training_history(main_history)
+main_fine_result = main_model.evaluate_generator(generator_test, steps=steps_test)
+print("Test-set classification accuracy: {0:.2%}".format(main_fine_result[1]))
+example_errors(main_fine_history)
