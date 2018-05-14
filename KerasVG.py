@@ -325,7 +325,7 @@ for layer in model.layers:
 
 print_layer_trainable()
 
-main_model.compile(optimizer=optimizer, loss=loss)
+main_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 main_model.summary()
 
