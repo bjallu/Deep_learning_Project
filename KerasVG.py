@@ -16,6 +16,7 @@ from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import confusion_matrix
 from input_pipe import *
 from keras.models import load_model
+import pickle
 
 model = VGG16(include_top=True, weights='imagenet')
 
@@ -128,7 +129,7 @@ def example_errors(model_in):
     generator_train.reset()
 
     # Predict the classes for all images in the test-set.
-    y_pred = model_in.predict_generator(generator_train,
+    y_pred = model_in.predict_generator(generator_train_histogram,
                                          steps=steps_per_epoch)
 
     # Convert the predicted classes from arrays to integers.
@@ -140,30 +141,14 @@ def example_errors(model_in):
     # Print the confusion matrix.
     print_confusion_matrix(cls_pred)
 
-def plot_training_history(history):
-    # Get the classification accuracy and loss-value
-    # for the training-set.
-    acc = history.history['categorical_accuracy']
-    loss = history.history['loss']
+def save_history(history):
+    currentTime = int(time.time())
+    filename = str(currentTime) + 'History'
+    filename = open(filename + ".pickle", 'w+')
+    pickle.dump(history, filename)
+    filename.close()
 
-    # Get it for the validation-set (we only use the test-set).
-    val_acc = history.history['val_categorical_accuracy']
-    val_loss = history.history['val_loss']
 
-    # Plot the accuracy and loss-values for the training-set.
-    plt.plot(acc, linestyle='-', color='b', label='Training Acc.')
-    plt.plot(loss, 'o', color='b', label='Training Loss')
-
-    # Plot it for the test-set.
-    plt.plot(val_acc, linestyle='--', color='r', label='Test Acc.')
-    plt.plot(val_loss, 'o', color='r', label='Test Loss')
-
-    # Plot title and legend.
-    plt.title('Training and Test Accuracy')
-    plt.legend()
-
-    # Ensure the plot shows correctly.
-    plt.show()
 
 def print_confusion_matrix(cls_pred):
     # cls_pred is an array of the predicted class-number for
@@ -239,11 +224,11 @@ if True:
 else:
     save_to_dir='augmented_images/'
 
-train_dir = '../tiny-imagenet-200/train'
-test_dir = '../tiny-imagenet-200/val'
+#train_dir = '../tiny-imagenet-200/train'
+#test_dir = '../tiny-imagenet-200/val'
 
-#train_dir = './knifey-spoony/train'
-#test_dir = './knifey-spoony/test'
+train_dir = './knifey-spoony/train'
+test_dir = './knifey-spoony/test'
 
 generator_train = datagen_train.flow_from_directory(
     directory=train_dir,
@@ -251,6 +236,12 @@ generator_train = datagen_train.flow_from_directory(
     batch_size=batch_size,
     shuffle=True,
     save_to_dir=save_to_dir)
+
+generator_train_histogram = datagen_test.flow_from_directory(
+    directory=train_dir,
+    target_size=input_shape,
+    batch_size=batch_size,
+    shuffle=False)
 
 generator_test = datagen_test.flow_from_directory(
     directory=test_dir,
@@ -346,14 +337,14 @@ main_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 main_model.summary()
 
-epochs = 1
+epochs = 2
 
 main_history = main_model.fit_generator(generator=generator_train,
                                   epochs=epochs, steps_per_epoch=steps_per_epoch,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
-# plot_training_history(main_history)
+save_history(main_history)
 
 main_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_result[1]))
@@ -375,9 +366,10 @@ main_fine_history = main_model.fit_generator(generator=generator_train,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
-#plot_training_history(main_history)
+
 main_fine_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_fine_result[1]))
 example_errors(main_model)
-
+save_history(main_history)
+save_history(main_fine_history)
 save_model(main_model)
