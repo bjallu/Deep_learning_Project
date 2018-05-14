@@ -242,7 +242,7 @@ datagen_train = ImageDataGenerator(
       fill_mode='nearest')
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-batch_size = 1000
+batch_size = 500
 
 if True:
     save_to_dir = None
@@ -347,7 +347,7 @@ main_model.add(Dense(1024, activation='relu'))
 main_model.add(Dense(num_classes, activation='softmax'))
 
 optimizer = Adam(lr=1e-4)
-steps_per_epoch = 100
+steps_per_epoch = 200
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
