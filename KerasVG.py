@@ -145,7 +145,7 @@ def save_history(history):
     currentTime = int(time.time())
     filename = str(currentTime) + 'History'
     filename = open(filename + ".pickle", 'w+')
-    pickle.dump(history, filename)
+    pickle.dump(history.history, filename)
     filename.close()
 
 
