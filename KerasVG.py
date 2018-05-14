@@ -17,7 +17,6 @@ from sklearn.metrics import confusion_matrix
 from input_pipe import *
 from keras.models import load_model
 
-
 model = VGG16(include_top=True, weights='imagenet')
 
 def save_model(model_in):
@@ -224,12 +223,11 @@ input_shape = model.layers[0].output_shape[1:3]
 
 datagen_train = ImageDataGenerator(
       rescale=1./255,
-      rotation_range=180,
+      rotation_range=30,
       width_shift_range=0.1,
       height_shift_range=0.1,
-      shear_range=0.1,
       zoom_range=[0.9, 1.5],
-      horizontal_flip=False,
+      horizontal_flip=True,
       vertical_flip=False,
       fill_mode='nearest')
 
@@ -241,11 +239,11 @@ if True:
 else:
     save_to_dir='augmented_images/'
 
-#train_dir = '../tiny-imagenet-200/train'
-#test_dir = '../tiny-imagenet-200/val'
+train_dir = '../tiny-imagenet-200/train'
+test_dir = '../tiny-imagenet-200/val'
 
-train_dir = './knifey-spoony/train'
-test_dir = './knifey-spoony/test'
+#train_dir = './knifey-spoony/train'
+#test_dir = './knifey-spoony/test'
 
 generator_train = datagen_train.flow_from_directory(
     directory=train_dir,
@@ -333,6 +331,7 @@ main_model.add(Dense(1024, activation='relu'))
 main_model.add(Dense(num_classes, activation='softmax'))
 
 optimizer = Adam(lr=1e-4)
+steps_per_epoch = 5000
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
@@ -352,7 +351,7 @@ main_model.summary()
 epochs = 200
 
 main_history = main_model.fit_generator(generator=generator_train,
-                                  epochs=epochs,
+                                  epochs=epochs, steps_per_epoch=steps_per_epoch,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
 
@@ -375,13 +374,13 @@ optimizer_fine = Adam(lr=1e-7)
 main_model.compile(optimizer=optimizer_fine, loss=loss, metrics=metrics)
 
 main_fine_history = main_model.fit_generator(generator=generator_train,
-                                  epochs=epochs,
+                                  epochs=epochs, steps_per_epoch=steps_per_epoch,
                                   validation_data=generator_test,
                                   validation_steps=steps_test)
-
-save_model(main_model)
 
 #plot_training_history(main_history)
 main_fine_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_fine_result[1]))
-example_errors(main_fine_history)
+example_errors(main_model)
+
+save_model(main_model)
