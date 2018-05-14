@@ -18,10 +18,6 @@ from input_pipe import *
 from keras.models import load_model
 import pickle
 
-filename = open('1526309313History' + ".pickle","rb")
-history = pickle.load(filename)
-filename.close()
-
 def plot_training_history(history):
     # Get the classification accuracy and loss-value
     # for the training-set.
