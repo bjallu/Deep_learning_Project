@@ -130,7 +130,7 @@ def example_errors(model_in):
 
     # Predict the classes for all images in the test-set.
     y_pred = model_in.predict_generator(generator_train_histogram,
-                                         steps=steps_per_epoch)
+                                         steps=steps_train_histogram)
 
     # Convert the predicted classes from arrays to integers.
     cls_pred = np.argmax(y_pred, axis=1)
@@ -155,7 +155,7 @@ def print_confusion_matrix(cls_pred):
     # all images in the test-set.
 
     # Get the confusion matrix using sklearn.
-    cm = confusion_matrix(y_true=cls_train,  # True class for test-set.
+    cm = confusion_matrix(y_true=cls_train_histogram,  # True class for test-set.
                           y_pred=cls_pred)  # Predicted class.
 
     # write the confusion matrix to file
@@ -250,11 +250,13 @@ generator_test = datagen_test.flow_from_directory(
     shuffle=False)
 
 steps_test = generator_test.n / batch_size
+steps_train_histogram = generator_train_histogram.n / batch_size
 
 image_paths_train = path_join(train_dir, generator_train.filenames)
 image_paths_test = path_join(test_dir, generator_test.filenames)
 
 cls_train = generator_train.classes
+cls_train_histogram = generator_train_histogram.classes
 cls_test = generator_test.classes
 
 class_names = list(generator_train.class_indices.keys())

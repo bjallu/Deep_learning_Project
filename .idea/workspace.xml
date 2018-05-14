@@ -16,8 +16,8 @@
       <file leaf-file-name="KerasVG.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/KerasVG.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="131" column="33" lean-forward="false" selection-start-line="131" selection-start-column="33" selection-end-line="131" selection-end-column="33" />
+            <state relative-caret-position="472">
+              <caret line="157" column="52" lean-forward="false" selection-start-line="157" selection-start-column="52" selection-end-line="157" selection-end-column="52" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
                 <element signature="e#1051#1117#0" expanded="false" />
@@ -25,8 +25,7 @@
                 <element signature="e#1383#2752#0" expanded="false" />
                 <element signature="e#2796#3635#0" expanded="false" />
                 <element signature="e#3670#3764#0" expanded="false" />
-                <element signature="e#5894#6728#0" expanded="false" />
-                <element signature="e#8666#8782#0" expanded="false" />
+                <element signature="e#8803#8919#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -43,7 +42,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>conv_model</find>
       <find>steps_test</find>
       <find>cls_test</find>
       <find>plot</find>
@@ -67,11 +65,13 @@
       <find>class</find>
       <find>history</find>
       <find>result</find>
-      <find>example_errors</find>
       <find>generator_test</find>
       <find>plot_training_history</find>
       <find>save_history</find>
       <find>steps</find>
+      <find>generator_train_histogram</find>
+      <find>example_errors</find>
+      <find>cls_train</find>
     </findStrings>
     <replaceStrings>
       <replace>main_model</replace>
@@ -262,8 +262,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -279,8 +278,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -296,8 +294,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -313,8 +310,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -330,8 +326,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -347,8 +342,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -364,8 +358,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -381,8 +374,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -497,8 +489,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/KerasVG.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="131" column="33" lean-forward="false" selection-start-line="131" selection-start-column="33" selection-end-line="131" selection-end-column="33" />
+        <state relative-caret-position="472">
+          <caret line="157" column="52" lean-forward="false" selection-start-line="157" selection-start-column="52" selection-end-line="157" selection-end-column="52" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
             <element signature="e#1051#1117#0" expanded="false" />
@@ -506,8 +498,7 @@
             <element signature="e#1383#2752#0" expanded="false" />
             <element signature="e#2796#3635#0" expanded="false" />
             <element signature="e#3670#3764#0" expanded="false" />
-            <element signature="e#5894#6728#0" expanded="false" />
-            <element signature="e#8666#8782#0" expanded="false" />
+            <element signature="e#8803#8919#0" expanded="false" />
           </folding>
         </state>
       </provider>
