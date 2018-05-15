@@ -38,7 +38,7 @@ def print_layer_trainable():
         print("{0}:\t{1}".format(layer.trainable, layer.name))
 
 def print_layer_trainable():
-    for layer in mother_model.conv_model.layers:
+    for layer in mother_model.layers:
         print("{0}:\t{1}".format(layer.trainable, layer.name))
 
 mother_model = load_model('1526388233Model.h5')
