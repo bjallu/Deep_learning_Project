@@ -102,4 +102,4 @@ main_fine_result = mother_model.evaluate_generator(generator_test, steps=steps_t
 print("Test-set classification accuracy: {0:.2%}".format(main_fine_result[1]))
 
 # saves model
-save_model(mother_model)
+save_model()
