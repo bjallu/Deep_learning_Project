@@ -60,11 +60,6 @@ datagen_train = ImageDataGenerator(
 datagen_test = ImageDataGenerator(rescale=1./255)
 batch_size = 180
 
-if True:
-    save_to_dir = None
-else:
-    save_to_dir='augmented_images/'
-
 train_dir = '../tiny-imagenet-200/train'
 test_dir = '../tiny-imagenet-200/val'
 
@@ -76,7 +71,7 @@ generator_train = datagen_train.flow_from_directory(
     target_size=input_shape,
     batch_size=batch_size,
     shuffle=True,
-    save_to_dir=save_to_dir)
+    save_to_dir=None)
 
 generator_train_histogram = datagen_test.flow_from_directory(
     directory=train_dir,
@@ -95,9 +90,8 @@ steps_train_histogram = generator_train_histogram.n / batch_size
 
 
 steps_per_epoch = 100000 / batch_size
-epochs = 24
-
-print_layer_trainable()
+steps_per_epoch = 10
+epochs = 1
 
 main_fine_history = mother_model.fit_generator(generator=generator_train,
                                   epochs=epochs, steps_per_epoch=steps_per_epoch,
