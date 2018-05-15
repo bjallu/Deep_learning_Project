@@ -34,7 +34,7 @@ def load_images(image_paths):
     return np.asarray(images)
 
 def print_layer_trainable():
-    for layer in mother_model.layers:
+    for layer in mother_model.model_1.layers:
         print("{0}:\t{1}".format(layer.trainable, layer.name))
 
 def print_layer_trainable():
@@ -42,6 +42,8 @@ def print_layer_trainable():
         print("{0}:\t{1}".format(layer.trainable, layer.name))
 
 mother_model = load_model('1526388233Model.h5')
+
+mother_model.summary()
 
 input_shape = mother_model.layers[0].output_shape[1:3]
 
