@@ -40,9 +40,10 @@ def print_layer_trainable():
 mother_model = load_model('1526388233Model.h5')
 
 mother_model.summary()
-print_layer_trainable()
 
 conv_model = mother_model.get_layer('model_1')
+
+print_layer_trainable()
 
 input_shape = conv_model.layers[0].output_shape[1:3]
 
