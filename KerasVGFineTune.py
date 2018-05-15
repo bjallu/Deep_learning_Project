@@ -90,8 +90,7 @@ steps_train_histogram = generator_train_histogram.n / batch_size
 
 
 steps_per_epoch = 100000 / batch_size
-steps_per_epoch = 10
-epochs = 1
+epochs = 24
 
 main_fine_history = mother_model.fit_generator(generator=generator_train,
                                   epochs=epochs, steps_per_epoch=steps_per_epoch,
