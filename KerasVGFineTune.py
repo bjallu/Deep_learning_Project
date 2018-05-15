@@ -45,7 +45,7 @@ mother_model = load_model('1526388233Model.h5')
 
 mother_model.summary()
 
-input_shape = mother_model.layers[0].output_shape[1:3]
+input_shape = mother_model.model_1.layers[0].output_shape[1:3]
 
 datagen_train = ImageDataGenerator(
       rescale=1./255,
