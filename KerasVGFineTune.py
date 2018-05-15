@@ -63,21 +63,12 @@ batch_size = 180
 train_dir = '../tiny-imagenet-200/train'
 test_dir = '../tiny-imagenet-200/val'
 
-#train_dir = './knifey-spoony/train'
-#test_dir = './knifey-spoony/test'
-
 generator_train = datagen_train.flow_from_directory(
     directory=train_dir,
     target_size=input_shape,
     batch_size=batch_size,
     shuffle=True,
     save_to_dir=None)
-
-generator_train_histogram = datagen_test.flow_from_directory(
-    directory=train_dir,
-    target_size=input_shape,
-    batch_size=batch_size,
-    shuffle=False)
 
 generator_test = datagen_test.flow_from_directory(
     directory=test_dir,
@@ -86,8 +77,6 @@ generator_test = datagen_test.flow_from_directory(
     shuffle=False)
 
 steps_test = generator_test.n / batch_size
-steps_train_histogram = generator_train_histogram.n / batch_size
-
 
 steps_per_epoch = 100000 / batch_size
 epochs = 24
