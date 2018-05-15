@@ -58,7 +58,7 @@ datagen_train = ImageDataGenerator(
       fill_mode='nearest')
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-batch_size = 180
+batch_size = 90
 
 train_dir = '../tiny-imagenet-200/train'
 test_dir = '../tiny-imagenet-200/val'
