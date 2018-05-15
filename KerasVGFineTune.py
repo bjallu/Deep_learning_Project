@@ -34,18 +34,17 @@ def load_images(image_paths):
     return np.asarray(images)
 
 def print_layer_trainable():
-    for layer in mother_model.model_1.layers:
-        print("{0}:\t{1}".format(layer.trainable, layer.name))
-
-def print_layer_trainable():
-    for layer in mother_model.layers:
+    for layer in conv_model.layers:
         print("{0}:\t{1}".format(layer.trainable, layer.name))
 
 mother_model = load_model('1526388233Model.h5')
 
 mother_model.summary()
+print_layer_trainable()
 
-input_shape = mother_model.model_1.layers[0].output_shape[1:3]
+conv_model = mother_model.get_layer('model_1')
+
+input_shape = conv_model.layers[0].output_shape[1:3]
 
 datagen_train = ImageDataGenerator(
       rescale=1./255,
