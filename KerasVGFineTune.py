@@ -95,13 +95,6 @@ steps_train_histogram = generator_train_histogram.n / batch_size
 steps_per_epoch = 100000 / batch_size
 epochs = 24
 
-loss = 'categorical_crossentropy'
-metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
-
-optimizer_fine = Adam(lr=1e-5)
-
-mother_model.compile(optimizer=optimizer_fine, loss=loss, metrics=metrics)
-
 print_layer_trainable()
 
 main_fine_history = mother_model.fit_generator(generator=generator_train,
