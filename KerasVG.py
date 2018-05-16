@@ -312,6 +312,8 @@ main_model.add(Dense(num_classes, activation='softmax'))
 
 optimizer = Adam(lr=1e-4)
 steps_per_epoch = 100000 / batch_size
+steps_per_epoch = 1
+
 
 loss = 'categorical_crossentropy'
 metrics = ['categorical_accuracy', 'top_k_categorical_accuracy']
@@ -328,7 +330,7 @@ main_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 main_model.summary()
 
-epochs = 24
+epochs = 1
 
 main_history = main_model.fit_generator(generator=generator_train,
                                   epochs=epochs, steps_per_epoch=steps_per_epoch,
@@ -358,9 +360,12 @@ main_fine_history = main_model.fit_generator(generator=generator_train,
 main_fine_result = main_model.evaluate_generator(generator_test, steps=steps_test)
 print("Test-set classification accuracy: {0:.2%}".format(main_fine_result[1]))
 
+# saves model
+save_model(main_model)
+
 # Confusion Matrix
 example_errors(main_model)
 
 # Saves history to file
-save_model(main_model)
+save_history(main_history)
 save_history(main_fine_history)
