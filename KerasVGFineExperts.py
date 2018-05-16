@@ -49,19 +49,22 @@ def create_sub_directories(clusters):
 
 ############ Create and train experts ############
 number_of_experts = 10
+
 confusionMatrix = np.load('ConfusionMatrix.npy')
 
-clustering = SpectralClustering(n_clusters = number_of_experts, affinity='precomputed')
-d = clustering.fit(confusionMatrix)
+# clustering = SpectralClustering(n_clusters = number_of_experts, affinity='precomputed')
+# d = clustering.fit(confusionMatrix)
 
-labels = np.save('labels_from_clustering.npy', d.labels_)
-
+# labels = np.save('labels_from_clustering.npy', d.labels_)
+labels = np.load('labels_from_clustering.npy')
 path = '../tiny-imagenet-200'
+
+'''
 classFile = open('classes.txt', 'r')
 lines = classFile.readlines()
 
 # Create number_of_experts of directories
-for i in range(number_of_experts):
+for i in range(3, number_of_experts):
 
     tempPathCluster = path + str(i)
     # check if cluster main directory exists, if not create and create subdirectories
@@ -99,6 +102,7 @@ for i, line in enumerate(lines):
             os.makedirs(tempTrain)
             os.makedirs(tempVal)
 
+'''
 datagen_train = ImageDataGenerator(
     rescale=1. / 255,
     rotation_range=30,
@@ -113,7 +117,7 @@ datagen_test = ImageDataGenerator(rescale=1./255)
 epochs = 24
 
 # trains the experts one by one
-for i in range(number_of_experts):
+for i in range(3, number_of_experts):
 
     expert = load_model('1526388233Model.h5')
     conv_model = expert.get_layer('model_1')
