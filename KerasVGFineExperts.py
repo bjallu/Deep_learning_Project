@@ -54,6 +54,8 @@ confusionMatrix = np.load('ConfusionMatrix.npy')
 clustering = SpectralClustering(n_clusters = number_of_experts, affinity='precomputed')
 d = clustering.fit(confusionMatrix)
 
+labels = np.save('labels_from_clustering.npy', d.labels_)
+
 path = '../tiny-imagenet-200'
 classFile = open('classes.txt', 'r')
 lines = classFile.readlines()
