@@ -110,7 +110,7 @@ datagen_train = ImageDataGenerator(
     fill_mode='nearest')
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-epochs = 1
+epochs = 24
 
 # trains the experts one by one
 for i in range(number_of_experts):
@@ -137,7 +137,7 @@ for i in range(number_of_experts):
         batch_size=batch_size,
         shuffle=False)
 
-    steps_per_epoch = generator_test.n / batch_size
+    steps_per_epoch = generator_train.n / batch_size
     steps_test = generator_test.n / batch_size
 
     expert_history = expert.fit_generator(generator=generator_train,
