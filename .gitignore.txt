@@ -1,4 +1,5 @@
 tiny-imagenet-200/*
 
 *.JPEG
+*.pyc
 *.h5
