@@ -62,7 +62,7 @@ conv_model = base_model.get_layer('model_1')
 input_shape = conv_model.layers[0].output_shape[1:3]
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-test_dir = '../tiny-imagenet-200/val'
+test_dir = '../tiny-imagenet-2005/val'
 batch_size = 1
 
 generator_test = datagen_test.flow_from_directory(
@@ -129,6 +129,6 @@ for i, initial in enumerate(base_predictions):
 file = open('Results.txt', 'w+')
 
 for line in total_results:
-    file.write(str(line[0]) + '\t' + line[1] + '\t' + line[2] + '\n')
+    file.write(str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\n')
 
 file.close()
