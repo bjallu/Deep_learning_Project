@@ -62,7 +62,7 @@ conv_model = base_model.get_layer('model_1')
 input_shape = conv_model.layers[0].output_shape[1:3]
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-test_dir = '../tiny-imagenet-2005/val'
+test_dir = '../tiny-imagenet-2003/val'
 batch_size = 1
 
 generator_test = datagen_test.flow_from_directory(
@@ -122,7 +122,7 @@ for i, initial in enumerate(base_predictions):
 
     total += 1
 
-    results = [[base_correct / total], [base_final_correct/total], [expert_correct / total]]
+    results = [base_correct / total, base_final_correct/total, expert_correct / total]
     print(results)
     total_results.append(results)
 
