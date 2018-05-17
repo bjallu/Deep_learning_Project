@@ -51,17 +51,18 @@ labels = np.load('labels_from_clustering.npy')
 
 expert_model_list = []
 
-for i in range(4):
+for i in range(number_of_experts):
     expertName = str(i) + "Expert.h5"
     model = load_model(expertName)
     expert_model_list.append(model)
 
 base_model = load_model('1526388233Model.h5')
+base_model_final = load_model('1526443982Mother_Model.h5')
 conv_model = base_model.get_layer('model_1')
 input_shape = conv_model.layers[0].output_shape[1:3]
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-test_dir = '../tiny-imagenet-200/val'
+test_dir = '../tiny-imagenet-2008/val'
 batch_size = 1
 
 generator_test = datagen_test.flow_from_directory(
@@ -72,16 +73,20 @@ generator_test = datagen_test.flow_from_directory(
 
 steps_test = generator_test.n / batch_size
 
-base_result = base_model.predict_generator(generator_test, steps=steps_test, verbose=1)
+base_result = base_model.predict_generator(generator_test, steps=steps_test)
+base_final_result = base_model_final.predict_generator(generator_test, steps=steps_test)
 
-intitial_predictions = np.argmax(base_result, axis=1)
-final_predictions = []
+base_predictions = np.argmax(base_result, axis=1)
+base_final_predictions = np.argmax(base_final_result, axis=1)
+
+expert_predictions = []
 true_predictions = []
 
-intitial_correct = 0
-correct = 0
+base_correct = 0
+expert_correct = 0
+base_final_correct = 0
 total = 0
-for i, initial in enumerate(intitial_predictions):
+for i, initial in enumerate(base_predictions):
     expert = labels[initial]
     expert_to_consult = expert_model_list[expert]
     image_path = test_dir + '/' + generator_test.filenames[i]
@@ -96,35 +101,34 @@ for i, initial in enumerate(intitial_predictions):
         img_resized = rgbimg.resize(input_shape, PIL.Image.LANCZOS)
         img_array = np.expand_dims(np.array(img_resized), axis=0)/255
 
-    final = expert_to_consult.predict(img_array)
-    # final = expert_to_consult.predict_generator(generator_test[i], steps=steps_test, verbose=1)
+    expert_final = expert_to_consult.predict(img_array)
 
-    intial_p = intitial_predictions[i]
-    final_p = np.argmax(final, axis=1)
+    base_p = base_predictions[i]
+    base_final_p = base_final_predictions[i]
+    expert_p = np.argmax(expert_final, axis=1)
     true_p = generator_test.classes[i]
 
-    if(true_p == intial_p):
-        intitial_correct += 1
+    if(true_p == base_p):
+        base_correct += 1
 
+    if(true_p == base_final_p):
+        base_final_correct += 1
 
-    if (true_p == final_p[0]):
-        correct += 1
+    if (true_p == expert_p[0]):
+        expert_correct += 1
 
-    final_predictions.append(final_p)
+    expert_predictions.append(expert_p)
     true_predictions.append(true_p)
 
-    print(intitial_correct / total)
-    print(correct / total)
-
     total += 1
+    print("Base: " + str(base_correct / total) + " Base final:" + str(base_final_correct/total) +  " Experts: " + str(expert_correct / total))
 
 
-print("Inital acc")
-print(intitial_correct / total)
+print("Base acc")
+print(base_correct / total)
 
-print("Final acc")
-print(correct / total)
+print("Base final acc")
+print(base_final_correct / total)
 
-
-
-print("Hello")
+print("Expert acc")
+print(expert_correct / total)
