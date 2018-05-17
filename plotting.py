@@ -4,18 +4,53 @@ import random
 from sklearn import *
 import matplotlib.pyplot as plt
 
+'''
+def plot_confusion_matrix(cm, classes,
+                          normalize=False,
+                          title='Confusion matrix',
+                          cmap=plt.cm.Blues):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    axes = plt.gca()
+    axes.set_xlim([0, 200])
+    axes.set_ylim([0, 200])
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
 
 
+##### Confusion Matrix #####
+classes = []
+with open('classes.txt') as f:
+    for line in f:
+        classes.append(line)
 
-dataFile = open('data.txt', 'r')
-lines = dataFile.readlines()
+confusionMatrix = np.load('ConfusionMatrix.npy')
+np.fill_diagonal(confusionMatrix, 0)
+plot_confusion_matrix(confusionMatrix, classes)
 
 
+##### Count cluster sizes #####
 clusters = np.load('labels_from_clustering.npy')
 y = np.bincount(clusters)
 ii = np.nonzero(y)[0]
 print(np.vstack((ii,y[ii])).T)
+'''
 
+##### Plot training data #####
+dataFile = open('Training_Data.txt', 'r')
+lines = dataFile.readlines()
 
 loss = []
 acc = []
@@ -36,12 +71,18 @@ for i, line in enumerate(lines):
     test_acc5.append(line[5])
 
 
-plt.plot(loss)
-plt.plot(acc)
-plt.plot(acc5)
-'''
-plt.plot(test_loss)
-plt.plot(test_acc)
-plt.plot(test_acc5)
-'''
+
+plt.clf()
+plt.figure(1)
+plt.plot(loss, label='Train - Loss')
+plt.plot(test_loss, label='Train - Loss')
+plt.legend()
+
+
+plt.subplot(212)
+plt.plot(acc, label='Train - Top 1 accuracy')
+plt.plot(acc5, label='Train - Top 5 accuracy')
+plt.plot(test_acc, label='Test - Top 1 accuracy')
+plt.plot(test_acc5, label='Test - Top 5 accuracy')
+plt.legend()
 plt.show()
