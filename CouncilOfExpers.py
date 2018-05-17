@@ -103,7 +103,7 @@ base_predictions = np.argmax(base_result, axis=1)
 base_final_predictions = np.argmax(base_final_result, axis=1)
 expert_predictions = np.argmax(council_resuts, axis=1)
 
-true_predictions = []
+total_results = []
 
 base_correct = 0
 expert_correct = 0

@@ -122,7 +122,7 @@ for i, initial in enumerate(base_predictions):
 
     total += 1
 
-    results = [base_correct / total, base_final_correct/total, expert_correct / total]
+    results = [base_correct/total, base_final_correct/total, expert_correct/total]
     print(results)
     total_results.append(results)
 
