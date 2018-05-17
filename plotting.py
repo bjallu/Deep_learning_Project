@@ -1,5 +1,11 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import itertools
+import random
+from sklearn import *
+import matplotlib.pyplot as plt
+
+
+
 
 dataFile = open('data.txt', 'r')
 lines = dataFile.readlines()
