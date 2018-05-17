@@ -109,6 +109,7 @@ base_correct = 0
 expert_correct = 0
 base_final_correct = 0
 total = 0
+
 for i, initial in enumerate(base_predictions):
 
     base_p = base_predictions[i]
@@ -125,15 +126,14 @@ for i, initial in enumerate(base_predictions):
     if (true_p == expert_p):
         expert_correct += 1
     total += 1
-    results = 
-    print("Base: " + str(base_correct / total) + " Base final:" + str(base_final_correct/total) +  " Experts: " + str(expert_correct / total))
 
+    results = [base_correct / total, base_final_correct/total, expert_correct / total]
+    print(results)
+    total_results.append(results)
 
-print("Base acc")
-print(base_correct / total)
+file = open('Council_Results.txt', 'w+')
 
-print("Base final acc")
-print(base_final_correct / total)
+for line in total_results:
+    file.write(str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\n')
 
-print("Expert acc")
-print(expert_correct / total)
+file.close()
