@@ -62,7 +62,7 @@ conv_model = base_model.get_layer('model_1')
 input_shape = conv_model.layers[0].output_shape[1:3]
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-test_dir = '../tiny-imagenet-2008/val'
+test_dir = '../tiny-imagenet-200/val'
 batch_size = 1
 
 generator_test = datagen_test.flow_from_directory(
@@ -74,18 +74,20 @@ generator_test = datagen_test.flow_from_directory(
 steps_test = generator_test.n / batch_size
 
 base_result = base_model.predict_generator(generator_test, steps=steps_test)
+generator_test.reset()
 base_final_result = base_model_final.predict_generator(generator_test, steps=steps_test)
 
 base_predictions = np.argmax(base_result, axis=1)
 base_final_predictions = np.argmax(base_final_result, axis=1)
 
-expert_predictions = []
-true_predictions = []
+
+total_results = []
 
 base_correct = 0
 expert_correct = 0
 base_final_correct = 0
 total = 0
+
 for i, initial in enumerate(base_predictions):
     expert = labels[initial]
     expert_to_consult = expert_model_list[expert]
@@ -117,18 +119,16 @@ for i, initial in enumerate(base_predictions):
     if (true_p == expert_p[0]):
         expert_correct += 1
 
-    expert_predictions.append(expert_p)
-    true_predictions.append(true_p)
 
     total += 1
-    print("Base: " + str(base_correct / total) + " Base final:" + str(base_final_correct/total) +  " Experts: " + str(expert_correct / total))
 
+    results = [[base_correct / total], [base_final_correct/total], [expert_correct / total]]
+    print(results)
+    total_results.append(results)
 
-print("Base acc")
-print(base_correct / total)
+file = open('Results.txt', 'w+')
 
-print("Base final acc")
-print(base_final_correct / total)
+for line in total_results:
+    file.write(str(line[0]) + '\t' + line[1] + '\t' + line[2] + '\n')
 
-print("Expert acc")
-print(expert_correct / total)
+file.close()
