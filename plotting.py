@@ -70,17 +70,61 @@ for i, line in enumerate(lines):
     test_acc.append(line[4])
     test_acc5.append(line[5])
 
+loss_array = np.asarray(loss)
+test_loss_array = np.asarray(test_loss)
+'''
+f, (ax1, ax2) = plt.subplots(2, sharex=True, sharey=False)
+x = np.arange(0, 72, 1)
+ax1.plot(x, loss, color='b', label='Train - Loss')
+ax2.plot(x, test_loss, color='r', label='Test - Loss')
+max_y_ticks = 10
+yloc = plt.MaxNLocator(max_y_ticks)
+ax1.legend()
+ax2.legend()
+ax1.yaxis.set_major_locator(yloc)
+ax2.yaxis.set_major_locator(yloc)
+dashes = [3, 3]
+ax1.axvline(48, color='black', dashes=dashes)
+ax2.axvline(48, color='black', dashes=dashes)
+f.subplots_adjust(hspace=0)
+plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+plt.tight_layout()
+plt.show()
 
+f, (ax1, ax2) = plt.subplots(2, sharex=True, sharey=False)
+x = np.arange(0, 72, 1)
+ax1.plot(x, acc, color='b', label='Train - Top 1 accuracy')
+ax2.plot(x, acc5, color='r', label='Train - Top 5 accuracy')
+max_y_ticks = 10
+yloc = plt.MaxNLocator(max_y_ticks)
+ax1.legend()
+ax2.legend()
+ax1.yaxis.set_major_locator(yloc)
+ax2.yaxis.set_major_locator(yloc)
+dashes = [3, 3]
+ax1.axvline(48, color='black', dashes=dashes)
+ax2.axvline(48, color='black', dashes=dashes)
+f.subplots_adjust(hspace=0)
+plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+plt.tight_layout()
+plt.show()
 
-plt.figure(1)
-plt.plot(loss, label='Train - Loss')
-plt.plot(test_loss, label='Test - Loss')
-plt.legend()
+'''
+f, (ax1, ax2) = plt.subplots(2, sharex=True, sharey=False)
+x = np.arange(0, 72, 1)
+ax1.plot(x, test_acc, color='b', label='Test - Top 1 accuracy')
+ax2.plot(x, test_acc5, color='r', label='Test - Top 5 accuracy')
+max_y_ticks = 10
+yloc = plt.MaxNLocator(max_y_ticks)
+ax1.legend()
+ax2.legend()
+ax1.yaxis.set_major_locator(yloc)
+ax2.yaxis.set_major_locator(yloc)
+dashes = [3, 3]
+ax1.axvline(48, color='black', dashes=dashes)
+ax2.axvline(48, color='black', dashes=dashes)
+f.subplots_adjust(hspace=0)
+plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+plt.tight_layout()
+plt.show()
 
-
-plt.subplot(2)
-plt.plot(acc, label='Train - Top 1 accuracy')
-plt.plot(acc5, label='Train - Top 5 accuracy')
-plt.plot(test_acc, label='Test - Top 1 accuracy')
-plt.plot(test_acc5, label='Test - Top 5 accuracy')
-plt.legend()
