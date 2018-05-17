@@ -61,7 +61,7 @@ conv_model = base_model.get_layer('model_1')
 input_shape = conv_model.layers[0].output_shape[1:3]
 
 datagen_test = ImageDataGenerator(rescale=1./255)
-test_dir = '../tiny-imagenet-2000/val'
+test_dir = '../tiny-imagenet-200/val'
 batch_size = 1
 
 generator_test = datagen_test.flow_from_directory(
@@ -83,7 +83,7 @@ correct = 0
 total = 0
 for i, initial in enumerate(intitial_predictions):
     expert = labels[initial]
-    expert_to_consult = expert_model_list[0] # !!!!!!!!
+    expert_to_consult = expert_model_list[expert]
     image_path = test_dir + '/' + generator_test.filenames[i]
 
     img = PIL.Image.open(image_path)
@@ -112,6 +112,9 @@ for i, initial in enumerate(intitial_predictions):
 
     final_predictions.append(final_p)
     true_predictions.append(true_p)
+
+    print(intitial_correct / total)
+    print(correct / total)
 
     total += 1
 
