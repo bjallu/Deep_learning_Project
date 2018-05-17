@@ -72,17 +72,15 @@ for i, line in enumerate(lines):
 
 
 
-plt.clf()
 plt.figure(1)
 plt.plot(loss, label='Train - Loss')
-plt.plot(test_loss, label='Train - Loss')
+plt.plot(test_loss, label='Test - Loss')
 plt.legend()
 
 
-plt.subplot(212)
+plt.subplot(2)
 plt.plot(acc, label='Train - Top 1 accuracy')
 plt.plot(acc5, label='Train - Top 5 accuracy')
 plt.plot(test_acc, label='Test - Top 1 accuracy')
 plt.plot(test_acc5, label='Test - Top 5 accuracy')
 plt.legend()
-plt.show()
