@@ -83,7 +83,7 @@ council_resuts = np.zeros_like(base_result)
 for e in expert_model_list:
     expert_result = e.predict_generator(generator_test, steps=steps_test, verbose=1)
     generator_test.reset()
-    expert_result = np.power(expert_result, 3)
+    expert_result = np.power(expert_result, 2)
     council_resuts += expert_result
 
 base_predictions = np.argmax(base_result, axis=1)
