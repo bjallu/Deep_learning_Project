@@ -116,7 +116,7 @@ epochs = 24
 
 # trains the experts one by one
 for i in range(number_of_experts):
-
+    print(i)
     expert = load_model('1526388233Model.h5')
     conv_model = expert.get_layer('model_1')
     input_shape = conv_model.layers[0].output_shape[1:3]
@@ -147,8 +147,6 @@ for i in range(number_of_experts):
                                       validation_data=generator_test,
                                       validation_steps=steps_test)
 
-    expert_result = expert.evaluate_generator(generator_test, steps=steps_test)
-    print("Test-set classification accuracy: {0:.2%}".format(expert_result[1]))
 
     # saves model
     save_model(i)
