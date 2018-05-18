@@ -114,14 +114,15 @@ datagen_train = ImageDataGenerator(
 datagen_test = ImageDataGenerator(rescale=1./255)
 epochs = 24
 
+expert = load_model('1526388233Model.h5')
+conv_model = expert.get_layer('model_1')
+input_shape = conv_model.layers[0].output_shape[1:3]
+
+batch_size = 90
+
 # trains the experts one by one
 for i in range(number_of_experts):
     print(i)
-    expert = load_model('1526388233Model.h5')
-    conv_model = expert.get_layer('model_1')
-    input_shape = conv_model.layers[0].output_shape[1:3]
-
-    batch_size = 90
 
     train_dir = '../tiny-imagenet-200' + str(i) + str('third_iteration') + '/train'
     test_dir = '../tiny-imagenet-200' + str(i) + str('third_iteration') + '/val'
