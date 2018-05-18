@@ -138,19 +138,10 @@ for i in range(11, number_of_experts):
         shuffle=True,
         save_to_dir=None)
 
-    generator_test = datagen_test.flow_from_directory(
-        directory=test_dir,
-        target_size=input_shape,
-        batch_size=batch_size,
-        shuffle=False)
 
     steps_per_epoch = generator_train.n / batch_size
-    steps_test = generator_test.n / batch_size
 
-    expert_history = expert.fit_generator(generator=generator_train,
-                                      epochs=epochs, steps_per_epoch=steps_per_epoch,
-                                      validation_data=generator_test,
-                                      validation_steps=steps_test)
+    expert.fit_generator(generator=generator_train, epochs=epochs, steps_per_epoch=steps_per_epoch)
 
 
     # saves model
