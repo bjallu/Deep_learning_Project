@@ -120,7 +120,7 @@ datagen_test = ImageDataGenerator(rescale=1./255)
 epochs = 24
 
 # trains the experts one by one
-for i in range(11, number_of_experts):
+for i in range(21, number_of_experts):
 
     expert = load_model('1526388233Model.h5')
     conv_model = expert.get_layer('model_1')
