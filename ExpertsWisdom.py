@@ -46,13 +46,13 @@ def predict(image_path):
 
 
 ############ Create and train experts ############
-number_of_experts = 10
-labels = np.load('labels_from_clustering.npy')
+number_of_experts = 3
+labels = np.load('labels_from_clustering_second_iteration.npy')
 
 expert_model_list = []
 
 for i in range(number_of_experts):
-    expertName = str(i) + "Expert.h5"
+    expertName = str(i) + "SecondGenerationExpert.h5"
     model = load_model(expertName)
     expert_model_list.append(model)
 
@@ -73,9 +73,10 @@ generator_test = datagen_test.flow_from_directory(
 
 steps_test = generator_test.n / batch_size
 
-base_result = base_model.predict_generator(generator_test, steps=steps_test)
+base_result = base_model.predict_generator(generator_test, steps=steps_test, verbose=1)
 generator_test.reset()
-base_final_result = base_model_final.predict_generator(generator_test, steps=steps_test)
+base_final_result = base_model_final.predict_generator(generator_test, steps=steps_test, verbose=1)
+generator_test.reset()
 
 base_predictions = np.argmax(base_result, axis=1)
 base_final_predictions = np.argmax(base_final_result, axis=1)
@@ -126,7 +127,7 @@ for i, initial in enumerate(base_predictions):
     print(results)
     total_results.append(results)
 
-file = open('Results.txt', 'w+')
+file = open('ResultsFlowSecondGeneration.txt', 'w+')
 
 for line in total_results:
     file.write(str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\n')
