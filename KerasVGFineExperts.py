@@ -23,7 +23,7 @@ from distutils.dir_util import copy_tree
 
 
 def save_model(i):
-    model_name = str(i) + 'SecondGenerationExpert.h5'
+    model_name = str(i) + 'MichaelPhelps.h5'
     expert.save(model_name)
 
 def path_join(dirname, filenames):
@@ -48,17 +48,15 @@ def create_sub_directories(clusters):
         tempPathVal = '../tiny-imagenet-200/val/'
 
 ############ Create and train experts ############
-number_of_experts = 3
+number_of_experts = 36
 
 confusionMatrix = np.load('ConfusionMatrix.npy')
-
 clustering = SpectralClustering(n_clusters = number_of_experts, affinity='precomputed')
 d = clustering.fit(confusionMatrix)
 
-labels = np.save('labels_from_clustering_second_iteration.npy', d.labels_)
+labels = np.save('labels_from_clustering_third_generation.npy', d.labels_)
 #labels = np.load('labels_from_clustering.npy')
 path = '../tiny-imagenet-200'
-
 
 classFile = open('classes.txt', 'r')
 lines = classFile.readlines()
@@ -66,7 +64,7 @@ lines = classFile.readlines()
 # Create number_of_experts of directories
 for i in range(number_of_experts):
 
-    tempPathCluster = path + str(i) + str('second_iteration')
+    tempPathCluster = path + str(i) + str('third_iteration')
     # check if cluster main directory exists, if not create and create subdirectories
 
     if not os.path.exists(tempPathCluster):
@@ -85,8 +83,8 @@ for i, line in enumerate(lines):
     # is equal to the category's assigned cluster
     for cluster in range(0, number_of_experts):
 
-        tempTrain = path + str(cluster) + str('second_iteration') + "/train/" + str(categoryName)
-        tempVal = path + str(cluster) + str('second_iteration') + "/val/" + str(categoryName)
+        tempTrain = path + str(cluster) + str('third_iteration') + "/train/" + str(categoryName)
+        tempVal = path + str(cluster) + str('third_iteration') + "/val/" + str(categoryName)
 
         if(cluster == categoryCluster):
             # Copy over training images
@@ -125,8 +123,8 @@ for i in range(number_of_experts):
 
     batch_size = 90
 
-    train_dir = '../tiny-imagenet-200' + str(i) + str('second_iteration') + '/train'
-    test_dir = '../tiny-imagenet-200' + str(i) + str('second_iteration') + '/val'
+    train_dir = '../tiny-imagenet-200' + str(i) + str('third_iteration') + '/train'
+    test_dir = '../tiny-imagenet-200' + str(i) + str('third_iteration') + '/val'
 
     generator_train = datagen_train.flow_from_directory(
         directory=train_dir,
