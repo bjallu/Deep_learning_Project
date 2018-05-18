@@ -83,6 +83,7 @@ council_resuts = np.zeros_like(base_result)
 for e in expert_model_list:
     expert_result = e.predict_generator(generator_test, steps=steps_test, verbose=1)
     generator_test.reset()
+    expert_result = np.power(expert_result, 3)
     council_resuts += expert_result
 
 base_predictions = np.argmax(base_result, axis=1)
@@ -117,7 +118,7 @@ for i, initial in enumerate(base_predictions):
     print(results)
     total_results.append(results)
 
-file = open('Council_ResultsSecondGeneration.txt', 'w+')
+file = open('Council_ResultsSecondGenerationPower3.txt', 'w+')
 
 for line in total_results:
     file.write(str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\n')
