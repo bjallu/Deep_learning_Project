@@ -49,15 +49,19 @@ def create_sub_directories(clusters):
 
 ############ Create and train experts ############
 number_of_experts = 36
-
+'''
 confusionMatrix = np.load('ConfusionMatrix.npy')
 clustering = SpectralClustering(n_clusters = number_of_experts, affinity='precomputed')
 d = clustering.fit(confusionMatrix)
 
-labels = np.save('labels_from_clustering_third_generation.npy', d.labels_)
-#labels = np.load('labels_from_clustering.npy')
+# labels = np.save('labels_from_clustering_third_generation.npy', d.labels_)
+
+labels = np.load('labels_from_clustering_third_generation.npy')
+'''
+
 path = '../tiny-imagenet-200'
 
+'''
 classFile = open('classes.txt', 'r')
 lines = classFile.readlines()
 
@@ -100,6 +104,7 @@ for i, line in enumerate(lines):
             os.makedirs(tempTrain)
             os.makedirs(tempVal)
 
+'''
 
 datagen_train = ImageDataGenerator(
     rescale=1. / 255,
@@ -114,15 +119,14 @@ datagen_train = ImageDataGenerator(
 datagen_test = ImageDataGenerator(rescale=1./255)
 epochs = 24
 
-expert = load_model('1526388233Model.h5')
-conv_model = expert.get_layer('model_1')
-input_shape = conv_model.layers[0].output_shape[1:3]
-
-batch_size = 90
-
 # trains the experts one by one
-for i in range(number_of_experts):
-    print(i)
+for i in range(1,number_of_experts):
+
+    expert = load_model('1526388233Model.h5')
+    conv_model = expert.get_layer('model_1')
+    input_shape = conv_model.layers[0].output_shape[1:3]
+
+    batch_size = 90
 
     train_dir = '../tiny-imagenet-200' + str(i) + str('third_iteration') + '/train'
     test_dir = '../tiny-imagenet-200' + str(i) + str('third_iteration') + '/val'
