@@ -46,13 +46,13 @@ def predict(image_path):
 
 
 ############ Create and train experts ############
-number_of_experts = 3
-labels = np.load('labels_from_clustering_second_iteration.npy')
+number_of_experts = 10
+labels = np.load('labels_from_clustering.npy')
 
 expert_model_list = []
 
 for i in range(number_of_experts):
-    expertName = str(i) + "SecondGenerationExpert.h5"
+    expertName = str(i) + "Expert.h5"
     model = load_model(expertName)
     expert_model_list.append(model)
 
@@ -127,7 +127,7 @@ for i, initial in enumerate(base_predictions):
     print(results)
     total_results.append(results)
 
-file = open('ResultsFlowSecondGeneration.txt', 'w+')
+file = open('ResultsFlow10Experts.txt', 'w+')
 
 for line in total_results:
     file.write(str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\n')
