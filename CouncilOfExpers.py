@@ -59,7 +59,7 @@ for i in range(number_of_experts):
 '''
 
 base_model = load_model('1526388233Model.h5')
-base_model_final = load_model('1526443982Mother_Model.h5')
+# base_model_final = load_model('1526443982Mother_Model.h5')
 conv_model = base_model.get_layer('model_1')
 input_shape = conv_model.layers[0].output_shape[1:3]
 
@@ -77,8 +77,8 @@ steps_test = generator_test.n / batch_size
 
 base_result = base_model.predict_generator(generator_test, steps=steps_test, verbose=1)
 generator_test.reset()
-base_final_result = base_model_final.predict_generator(generator_test, steps=steps_test, verbose=1)
-generator_test.reset()
+# base_final_result = base_model_final.predict_generator(generator_test, steps=steps_test, verbose=1)
+# generator_test.reset()
 
 council_resuts = np.zeros_like(base_result)
 council_resuts_squared = np.zeros_like(base_result)
@@ -88,13 +88,12 @@ for i in range(number_of_experts):
     model = load_model(expertName)
     expert_result = model.predict_generator(generator_test, steps=steps_test, verbose=1)
     generator_test.reset()
-    expert_result = expert_result
     expert_result_squared = np.power(expert_result, 2)
-    del model
-
     council_resuts += expert_result
     council_resuts_squared += expert_result_squared
-
+    del model
+    del expert_result
+    del expert_result_squared
 '''
 for e in expert_model_list:
     expert_result = e.predict_generator(generator_test, steps=steps_test, verbose=1)
@@ -104,7 +103,7 @@ for e in expert_model_list:
 '''
 
 base_predictions = np.argmax(base_result, axis=1)
-base_final_predictions = np.argmax(base_final_result, axis=1)
+# base_final_predictions = np.argmax(base_final_result, axis=1)
 expert_predictions = np.argmax(council_resuts, axis=1)
 expert_predictions_squared = np.argmax(council_resuts_squared, axis=1)
 
@@ -119,7 +118,7 @@ total = 0
 for i, initial in enumerate(base_predictions):
 
     base_p = base_predictions[i]
-    base_final_p = base_final_predictions[i]
+    # base_final_p = base_final_predictions[i]
     expert_p = expert_predictions[i]
     expert_p_squared = expert_predictions_squared[i]
     true_p = generator_test.classes[i]
@@ -127,9 +126,10 @@ for i, initial in enumerate(base_predictions):
     if(true_p == base_p):
         base_correct += 1
 
+    '''
     if(true_p == base_final_p):
         base_final_correct += 1
-
+    '''
     if (true_p == expert_p):
         expert_correct += 1
 
@@ -138,13 +138,14 @@ for i, initial in enumerate(base_predictions):
 
     total += 1
 
-    results = [base_correct / total, base_final_correct/total, expert_correct / total, expert_correct_squared/total]
+    results = [base_correct / total, expert_correct / total, expert_correct_squared/total]
+    # results = [base_correct / total, base_final_correct / total, expert_correct / total, expert_correct_squared / total]
     print(results)
     total_results.append(results)
 
 file = open('MichaelPhelps36.txt', 'w+')
 
 for line in total_results:
-    file.write(str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\t' + str(line[3]) + '\n')
+    file.write(str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\n')
 
 file.close()
