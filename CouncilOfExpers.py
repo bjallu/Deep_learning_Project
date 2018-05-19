@@ -73,7 +73,7 @@ np.save('correctClasses.npy', np.asarray(generator_test.classes))
 
 council_resuts = np.zeros_like(base_result)
 
-for i in range(17, number_of_experts):
+for i in range(34, number_of_experts):
     expertName = str(i) + "MichaelPhelps.h5"
     model = load_model(expertName)
     expert_result = model.predict_generator(generator_test, steps=steps_test, verbose=1)
