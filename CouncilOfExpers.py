@@ -65,7 +65,7 @@ generator_test.reset()
 np.save('BaseModelesults.npy', base_result)
 del base_model
 
-np.save('correctClasses.npy', generator_test.classes)
+np.save('correctClasses.npy', np.asarray(generator_test.classes))
 
 
 # base_final_result = base_model_final.predict_generator(generator_test, steps=steps_test, verbose=1)
